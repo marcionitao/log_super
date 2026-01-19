@@ -1,7 +1,7 @@
 [project]
 name = "log-super"
 version = "0.1.0"
-description = ""
+description = "a modern API designed for efficient user management."
 authors = [{ name = "Márcio", email = "marcionitao@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.14"
@@ -10,6 +10,10 @@ dependencies = ["fastapi[standard] (>=0.128.0,<0.129.0)"]
 [tool.poetry]
 packages = [{ include = "log_super", from = "src" }]
 
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+
 [tool.ruff]
 line-length = 79
 extend-exclude = ["migrations"]
@@ -17,7 +21,7 @@ target-version = "py313"
 
 [tool.ruff.lint]
 preview = true
-select = ["E", "F", "I", "PT", "B", "ASYNC", "W", "PL"]
+select = ["E", "F", "I", "PT", "ASYNC", "W", "PL"]
 ignore = ["E501"]
 
 [tool.ruff.format]
@@ -25,7 +29,10 @@ preview = true
 quote-style = "single"
 
 [tool.taskipy.tasks]
-run = "poetry run fastapi dev src/app.py"
+# run = "poetry run fastapi dev src/app.py"
+run = "fastapi dev src/app.py"
+test = "pytest --cov=src -vv"
+test_cov = "coverage html && open htmlcov/index.html"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

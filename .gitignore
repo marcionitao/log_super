@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# FastAPI
+*.db
+*.sqlite3
+
+# Pytest
+.cache/
+*.cover
+*.egg-info/
+*.eggs/
+*.pytest_cache/
+
+# Virtual environment
+venv/
+.env
+
+# VS Code
+.vscode/
