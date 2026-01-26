@@ -12,7 +12,12 @@ class UserSchema(BaseModel):
     password: str
 
 
+class UserDB(UserSchema):
+    id: int
+
+
 # response
 class UserPublic(BaseModel):
+    id: int
     username: str
     email: EmailStr
