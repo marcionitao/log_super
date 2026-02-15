@@ -1,12 +1,8 @@
 from http import HTTPStatus
 
-from fastapi.testclient import TestClient
 
-from src.app import app
-
-
-def test_read_root_deve_retornar_ok_e_ola_mundo():
-    client = TestClient(app)  # Arrange(organização)
+def test_read_root_deve_retornar_ok_e_ola_mundo(client):
+    # client (conftest.py) => Arrange(organização)
 
     response = client.get('/')  # Act(ação)
 
@@ -14,9 +10,8 @@ def test_read_root_deve_retornar_ok_e_ola_mundo():
     assert response.json() == {'message': 'Olá Mundo!'}
 
 
-def test_create_user_deve_retornar_created():
-    # Arrange(organização)
-    client = TestClient(app)
+def test_create_user_deve_retornar_created(client):
+    # client (conftest.py) => Arrange(organização)
 
     # Act(ação) -> UserSchema(Requisição)
     response = client.post(
