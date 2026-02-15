@@ -72,3 +72,13 @@ def test_update_users(client):
         'email': 'alice@mail.com',
         'id': 1,
     }
+
+
+def test_delete_users(client):
+    # client (conftest.py) => Arrange(organização)
+
+    # Act(ação) -> UserSchema(Requisição)
+    response = client.delete('/users/1')
+
+    # Assert(validação) -> UserPublic(Resposta)
+    assert response.json() == {'message': 'User deleted'}

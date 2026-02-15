@@ -53,6 +53,7 @@ def update_user(user_id: int, user: UserSchema):
     return user_with_id
 
 
+# delete usuario
 @app.delete(
     '/users/{user_id}', status_code=HTTPStatus.OK, response_model=Message
 )
