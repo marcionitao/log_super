@@ -50,3 +50,25 @@ def test_read_users(client):
             }
         ]
     }
+
+
+def test_update_users(client):
+    # client (conftest.py) => Arrange(organização)
+
+    # Act(ação) -> UserSchema(Requisição)
+    response = client.put(
+        '/users/1',
+        json={
+            'username': 'alice',
+            'email': 'alice@mail.com',
+            'password': 'secret',
+        },
+    )
+
+    # Assert(validação) -> UserPublic(Resposta)
+    assert response.status_code == HTTPStatus.CREATED
+    assert response.json() == {
+        'username': 'alice',
+        'email': 'alice@mail.com',
+        'id': 1,
+    }
