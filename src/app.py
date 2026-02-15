@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from schemas import Message, UserDB, UserList, UserPublic, UserSchema
 
@@ -39,9 +39,31 @@ def read_users():
     response_model=UserPublic,
 )
 def update_user(user_id: int, user: UserSchema):
+    # tratando erros
+    if user_id < 1 or user_id > len(database):
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='User not found'
+        )
+
     # Busca um usuário no formato do banco(array), copiando todos os dados recebidos na requisição e adicionando um id novo.
     user_with_id = UserDB(id=user_id, **user.model_dump())
     # atualizar a lista
     database[user_id - 1] = user_with_id
 
     return user_with_id
+
+
+@app.delete(
+    '/users/{user_id}', status_code=HTTPStatus.OK, response_model=Message
+)
+def delete_user(user_id: int):
+    # tratando erros
+    if user_id < 1 or user_id > len(database):
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='User not found'
+        )
+
+    # deleta se existir e atualizar a lista
+    del database[user_id - 1]
+
+    return {'message': 'User deleted'}
