@@ -30,3 +30,23 @@ def test_create_user_deve_retornar_created(client):
         'email': 'alice@mail.com',
         'id': 1,
     }
+
+
+def test_read_users(client):
+    # client (conftest.py) => Arrange(organização)
+
+    # Act(ação) -> UserSchema(Requisição)
+    response = client.get('/users/')
+
+    # Assert(validação) -> UserList(Resposta)
+    assert response.status_code == HTTPStatus.OK
+    # só pode ser executado depois do teste anterior
+    assert response.json() == {
+        'users': [
+            {
+                'username': 'alice',
+                'email': 'alice@mail.com',
+                'id': 1,
+            }
+        ]
+    }
