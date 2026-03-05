@@ -13,6 +13,8 @@ This project is set up using the following technologies and tools:
 - **[Python](https://www.python.org/)** (>= 3.14): The base language of the project, using modern features.
 - **[FastAPI](https://fastapi.tiangolo.com/)**: A high-performance web framework for building APIs, based on open standards (OpenAPI and JSON Schema).
 - **[Poetry](https://python-poetry.org/)**: A robust tool for dependency management and packaging.
+- **[SQLAlchemy](https://www.sqlalchemy.org/)**: The Python SQL toolkit and Object-Relational Mapper for database interaction.
+- **[Alembic](https://alembic.sqlalchemy.org/)**: A lightweight database migration tool for use with SQLAlchemy.
 - **[Pydantic](https://docs.pydantic.dev/)**: Data validation and settings management using type hints.
 - **[Ruff](https://docs.astral.sh/ruff/)**: An extremely fast code linter and formatter, replacing tools like Flake8 and Black.
 - **[Pytest](https://docs.pytest.org/)**: A mature framework for running automated tests.
