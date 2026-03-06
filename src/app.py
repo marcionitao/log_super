@@ -20,7 +20,7 @@ def read_root():
 
 # cria usuarios
 @app.post('/users/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema, session=Depends(get_session())):
+def create_user(user: UserSchema, session=Depends(get_session)):
 
     # busca se existe alguem com o email registado
     db_user = session.scalar(
