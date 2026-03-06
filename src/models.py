@@ -19,8 +19,3 @@ class User:
         init=False,
         server_default=func.now(),
     )
-    updated_at: Mapped[datetime] = mapped_column(
-        # onupdate=func.now() -> atualiza a hora do sistema onde ele está a executar
-        init=False,
-        onupdate=func.now(),
-    )

@@ -1,8 +1,12 @@
 from http import HTTPStatus
 
 from fastapi import FastAPI, HTTPException
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
 
+from models import User
 from schemas import Message, UserDB, UserList, UserPublic, UserSchema
+from settings import Settings
 
 app = FastAPI()
 
@@ -18,12 +22,43 @@ def read_root():
 # cria usuarios
 @app.post('/users/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema):
-    # Crie um usuário no formato do banco(array), copiando todos os dados recebidos na requisição e adicionando um id novo.
-    user_with_id = UserDB(id=len(database) + 1, **user.model_dump())
+    # criando uma engine e conectando com o DB
+    engine = create_engine(Settings().DATABASE_URL)
 
-    database.append(user_with_id)
+    # criando uma Session
+    # a "Session" faz o meio campo entre a nossa app e o DB
+    with Session(engine) as session:
+        # busca se existe alguem com o email registado
+        db_user = session.scalar(
+            select(User).where(
+                (User.username == user.username) | (User.email == user.email)
+            )
+        )
 
-    return user_with_id
+        if db_user:
+            if db_user.username == user.username:
+                raise HTTPException(
+                    status_code=HTTPStatus.BAD_REQUEST,
+                    detail='Username already exists',
+                )
+            elif db_user.email == user.email:
+                raise HTTPException(
+                    status_code=HTTPStatus.BAD_REQUEST,
+                    detail='Email already exists',
+                )
+
+        # criar o registo no DB
+        # converter o Schema para DB
+        db_user = User(
+            username=user.username, email=user.email, password=user.password
+        )
+
+        # chama a session e aplica
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+
+    return db_user
 
 
 # lista usuarios

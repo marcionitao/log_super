@@ -33,8 +33,8 @@ quote-style = "single"
 run = "fastapi dev src/app.py"
 test = "pytest --cov=src -vv"
 test_cov = "coverage html && open htmlcov/index.html"
-migrate = "alembic revision --autogenerate -m {posargs}" # uso -> taskipy migrate -- ...descrição
-mirgrate_up = "alembic upgrade head"
+migrate = "alembic revision --autogenerate -m {posargs}" # uso -> task migrate -- ...descrição
+migrate_up = "alembic upgrade head"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
