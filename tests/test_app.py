@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+from src.schemas import UserPublic
+
 
 def test_read_root_deve_retornar_ok_e_ola_mundo(client):
     # client (conftest.py) => Arrange(organização)
@@ -37,22 +39,24 @@ def test_read_users(client):
 
     # Act(ação) -> UserSchema(Requisição)
     response = client.get('/users/')
+    # só pode ser executado depois do teste anterior
+    assert response.json() == {'users': []}
 
-    # Assert(validação) -> UserList(Resposta)
+
+def test_read_users_with_users(client, user):
+    # client (conftest.py) => Arrange(organização)
+    # faz a conversão de um objeto qualquer para um modelo do pydantic
+    user_schema = UserPublic.model_validate(user).model_dump()
+    # Act(ação) -> UserSchema(Requisição)
+    response = client.get('/users/')
+
+    # Assert(validação) -> UserPublic(Resposta)
     assert response.status_code == HTTPStatus.OK
     # só pode ser executado depois do teste anterior
-    assert response.json() == {
-        'users': [
-            {
-                'username': 'alice',
-                'email': 'alice@mail.com',
-                'id': 1,
-            }
-        ]
-    }
+    assert response.json() == {'users': [user_schema]}
 
 
-def test_update_users(client):
+def test_update_users(client, user):
     # client (conftest.py) => Arrange(organização)
 
     # Act(ação) -> UserSchema(Requisição)
@@ -62,6 +66,7 @@ def test_update_users(client):
             'username': 'alice',
             'email': 'alice@mail.com',
             'password': 'secret',
+            'id': 1,
         },
     )
 
@@ -74,7 +79,7 @@ def test_update_users(client):
     }
 
 
-def test_delete_users(client):
+def test_delete_users(client, user):
     # client (conftest.py) => Arrange(organização)
 
     # Act(ação) -> UserSchema(Requisição)

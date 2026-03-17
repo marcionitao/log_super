@@ -6,7 +6,7 @@ from sqlalchemy.pool import StaticPool
 
 from src.app import app
 from src.database import get_session
-from src.models import table_registry
+from src.models import User, table_registry
 
 
 # função que usa uma sessão de teste, ou seja um Mock
@@ -17,7 +17,6 @@ def client(session):
 
     with TestClient(app) as client:
         app.dependency_overrides[get_session] = get_sessiion_override
-
         yield client
 
     app.dependency_overrides.clear()
@@ -28,7 +27,6 @@ def session():
     # "create_engine", cria um ponto de contato com o DB, estabelece e gere as conexões(credenciais, uri do DB)
     engine = create_engine(
         'sqlite:///:memory:',
-        # permite que os testes rodem em thread diferentes
         connect_args={'check_same_thread': False},
         poolclass=StaticPool,
     )  # DB em memoria
@@ -41,3 +39,14 @@ def session():
 
     # destrua tudo assim que terminar os testes
     table_registry.metadata.drop_all(engine)
+
+
+# registar um usuario para ser usado em todos os testes
+@pytest.fixture
+def user(session):
+    user = User(username='Teste', email='test@test.com', password='testtest')
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+    return user

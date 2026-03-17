@@ -3,13 +3,11 @@ from http import HTTPStatus
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 
-from database import get_session
-from models import User
-from schemas import Message, UserDB, UserList, UserPublic, UserSchema
+from src.database import get_session
+from src.models import User
+from src.schemas import Message, UserList, UserPublic, UserSchema
 
 app = FastAPI()
-
-database = []
 
 
 # mensagem
@@ -41,24 +39,29 @@ def create_user(user: UserSchema, session=Depends(get_session)):
                 detail='Email already exists',
             )
 
-        # criar o registo no DB
-        # converter o Schema para DB
-        db_user = User(
-            username=user.username, email=user.email, password=user.password
-        )
+    # criar o registo no DB
+    # converter o Schema para DB
+    # now = datetime.now().isoformat()
+    db_user = User(
+        username=user.username,
+        email=user.email,
+        password=user.password,
+        # created_at=now,
+    )
 
-        # chama a session e aplica
-        session.add(db_user)
-        session.commit()
-        session.refresh(db_user)
+    # chama a session e aplica
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
 
     return db_user
 
 
 # lista usuarios
 @app.get('/users/', status_code=HTTPStatus.OK, response_model=UserList)
-def read_users():
-    return {'users': database}
+def read_users(limit: int = 10, offset: int = 0, session=Depends(get_session)):
+    user = session.scalars(select(User).limit(limit).offset(offset))
+    return {'users': user}
 
 
 # editar usuario
@@ -67,33 +70,38 @@ def read_users():
     status_code=HTTPStatus.CREATED,
     response_model=UserPublic,
 )
-def update_user(user_id: int, user: UserSchema):
-    # tratando erros
-    if user_id < 1 or user_id > len(database):
+def update_user(user_id: int, user: UserSchema, session=Depends(get_session)):
+    db_user = session.scalar(select(User).where(User.id == user_id))
+
+    if not db_user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='User not found'
         )
 
-    # Busca um usuário no formato do banco(array), copiando todos os dados recebidos na requisição e adicionando um id novo.
-    user_with_id = UserDB(id=user_id, **user.model_dump())
-    # atualizar a lista
-    database[user_id - 1] = user_with_id
+    db_user.email = user.email
+    db_user.username = user.username
+    db_user.password = user.password
 
-    return user_with_id
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+
+    return db_user
 
 
 # delete usuario
 @app.delete(
     '/users/{user_id}', status_code=HTTPStatus.OK, response_model=Message
 )
-def delete_user(user_id: int):
-    # tratando erros
-    if user_id < 1 or user_id > len(database):
+def delete_user(user_id: int, session=Depends(get_session)):
+    db_user = session.scalar(select(User).where(User.id == user_id))
+
+    if not db_user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='User not found'
         )
 
-    # deleta se existir e atualizar a lista
-    del database[user_id - 1]
+    session.delete(db_user)
+    session.commit()
 
     return {'message': 'User deleted'}
