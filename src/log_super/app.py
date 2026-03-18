@@ -3,9 +3,10 @@ from http import HTTPStatus
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 
-from src.database import get_session
-from src.models import User
-from src.schemas import Message, UserList, UserPublic, UserSchema
+from log_super.database import get_session
+from log_super.models import User
+from log_super.schemas import Message, UserList, UserPublic, UserSchema
+from log_super.security import get_password_hash
 
 app = FastAPI()
 
@@ -45,8 +46,7 @@ def create_user(user: UserSchema, session=Depends(get_session)):
     db_user = User(
         username=user.username,
         email=user.email,
-        password=user.password,
-        # created_at=now,
+        password=get_password_hash(user.password),  # encriptar hash
     )
 
     # chama a session e aplica
@@ -80,7 +80,7 @@ def update_user(user_id: int, user: UserSchema, session=Depends(get_session)):
 
     db_user.email = user.email
     db_user.username = user.username
-    db_user.password = user.password
+    db_user.password = get_password_hash(user.password)  # encriptar hash
 
     session.add(db_user)
     session.commit()

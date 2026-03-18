@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from src.settings import Settings
+from log_super.settings import Settings
 
 # criando uma engine e conectando com o DB
 engine = create_engine(Settings().DATABASE_URL)

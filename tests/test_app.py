@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from src.schemas import UserPublic
+from log_super.schemas import UserPublic
 
 
 def test_read_root_deve_retornar_ok_e_ola_mundo(client):

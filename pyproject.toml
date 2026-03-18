@@ -5,7 +5,7 @@ description = "a modern API designed for efficient user management."
 authors = [{ name = "Márcio", email = "marcionitao@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.14,<4.0"
-dependencies = ["fastapi[standard] (>=0.128.0,<0.129.0)", "sqlalchemy (>=2.0.47,<3.0.0)", "pydantic-settings (>=2.13.1,<3.0.0)", "alembic (>=1.18.4,<2.0.0)"]
+dependencies = ["fastapi[standard] (>=0.128.0,<0.129.0)", "sqlalchemy (>=2.0.47,<3.0.0)", "pydantic-settings (>=2.13.1,<3.0.0)", "alembic (>=1.18.4,<2.0.0)", "pwdlib[argon2] (>=0.3.0,<0.4.0)"]
 
 [tool.poetry]
 packages = [{ include = "log_super", from = "src" }]
@@ -30,8 +30,8 @@ quote-style = "single"
 
 [tool.taskipy.tasks]
 # run = "poetry run fastapi dev src/app.py"
-run = "fastapi dev src/app.py"
-test = "pytest --cov=src -vv"
+run = "fastapi dev src/log_super/app.py"
+test = "pytest --cov=src/log_super -vv"
 test_cov = "coverage html && open htmlcov/index.html"
 migrate = "alembic revision --autogenerate -m {posargs}" # uso -> task migrate -- ...descrição
 migrate_up = "alembic upgrade head"

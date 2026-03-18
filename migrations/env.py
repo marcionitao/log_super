@@ -5,8 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.models import table_registry # important import
-from src.settings import Settings     # important import
+from log_super.models import table_registry # important import
+from log_super.settings import Settings     # important import
 
 config = context.config
 config.set_main_option('sqlalchemy.url', Settings().DATABASE_URL) # <- importante config localização do Banco

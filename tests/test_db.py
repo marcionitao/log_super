@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from src.models import User
+from log_super.models import User
 
 
 def test_create_user(session):

@@ -4,9 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
-from src.app import app
-from src.database import get_session
-from src.models import User, table_registry
+from log_super.app import app
+from log_super.database import get_session
+from log_super.models import User, table_registry
 
 
 # função que usa uma sessão de teste, ou seja um Mock
