@@ -26,3 +26,8 @@ class UserPublic(BaseModel):
 # response List -> retorna uma lista de objetos sem password
 class UserList(BaseModel):
     users: list[UserPublic]
+
+
+class Token(BaseModel):
+    access_token: str  # o token JWT que vamos gerar
+    token_type: str  # o modelo que o cliente deve usar para Autenticação

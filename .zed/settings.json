@@ -1,0 +1,12 @@
+// Folder-specific settings
+//
+// For a full list of overridable settings, and general information on folder-specific settings,
+// see the documentation: https://zed.dev/docs/configuring-zed#settings-files
+{
+  "ui_font_size": 18,
+  "buffer_font_size": 18,
+
+  "agent_font_size": 18, // configuração mais geral (ainda suportada em algumas versões)
+  "agent_ui_font_size": 18, // controla as respostas do agente e texto das mensagens
+  "agent_buffer_font_size": 18, // controla especificamente a caixa de texto onde tu escreves (a mais importante para o input)
+}

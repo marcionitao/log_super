@@ -1,12 +1,17 @@
 from http import HTTPStatus
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 
 from log_super.database import get_session
 from log_super.models import User
-from log_super.schemas import Message, UserList, UserPublic, UserSchema
-from log_super.security import get_password_hash
+from log_super.schemas import Message, Token, UserList, UserPublic, UserSchema
+from log_super.security import (
+    create_access_token,
+    get_password_hash,
+    verify_password,
+)
 
 app = FastAPI()
 
@@ -105,3 +110,22 @@ def delete_user(user_id: int, session=Depends(get_session)):
     session.commit()
 
     return {'message': 'User deleted'}
+
+
+# usuario ao logar solicita um token ao servidor
+@app.post('/token', response_model=Token)
+def login_for_access_token(
+  form_data: OAuth2PasswordRequestForm = Depends(),
+  session=Depends(get_session)
+):
+    user = session.scalar(
+      select(User).where(User.email == form_data.username)
+  )
+
+    if not user or not verify_password(form_data.password, user.password):
+        raise HTTPException(
+          status_code=400, detail='Icorrect email or password'
+  )
+
+    access_token = create_access_token({'sub': user.email})
+    return {'access_token': access_token, 'token_type': 'Bearer'}
