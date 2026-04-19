@@ -7,6 +7,7 @@ from sqlalchemy.pool import StaticPool
 from log_super.app import app
 from log_super.database import get_session
 from log_super.models import User, table_registry
+from log_super.security import get_password_hash
 
 
 # função que usa uma sessão de teste, ou seja um Mock
@@ -44,9 +45,13 @@ def session():
 # registar um usuario para ser usado em todos os testes
 @pytest.fixture
 def user(session):
-    user = User(username='Teste', email='test@test.com', password='testtest')
+    pwd = 'testtest'
+
+    user = User(username='Teste', email='test@test.com', password=get_password_hash(pwd))
 
     session.add(user)
     session.commit()
     session.refresh(user)
+
+    user.clean_password = pwd  # Monkey Patch -> significa que o password não está criptografado, apenas armazenado em texto plano
     return user
